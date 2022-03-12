@@ -401,13 +401,15 @@ class WalletRpcClient(RpcClient):
         additions: List[TxAddition],
         coins: Optional[List[Coin]] = None,
         fee: Optional[uint64] = uint64(0),
+        push_tx: bool = True
     ) -> TransactionRecord:
 
         request_data = {
             "wallet_id": wallet_id,
             "additions": [a.to_json() for a in additions],
             "coins": coins,
-            "fee": fee
+            "fee": fee,
+            "push_tx": push_tx
         }
         res = await self.fetch("cat_spend_multi", request_data)
         return TransactionRecord.from_json_dict_convenience(res["transaction"])

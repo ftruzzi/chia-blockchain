@@ -39,3 +39,4 @@ class CatSpendMultiRequest(TypedDict):
     additions: List[TxAdditionRequest]
     coins: Optional[List[Dict]]
     fee: Optional[uint64]
+    push_tx: bool

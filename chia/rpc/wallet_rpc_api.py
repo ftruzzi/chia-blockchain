@@ -888,8 +888,9 @@ class WalletRpcApi:
         txs: List[TransactionRecord] = await wallet.generate_signed_transaction(
             amounts=amounts, puzzle_hashes=puzzle_hashes, fee=request["fee"], memos=memos
         )
-        for tx in txs:
-            await wallet.standard_wallet.push_transaction(tx)
+        if request["push_tx"]:
+            for tx in txs:
+                await wallet.standard_wallet.push_transaction(tx)
 
         return {
             "transaction": txs[0].to_json_dict_convenience(self.service.config),
