@@ -63,6 +63,10 @@ class FullNodeRpcClient(RpcClient):
             return None
         return BlockRecord.from_json_dict(response["block_record"])
 
+    async def get_closest_index_from_timestamp(self, timestamp: int) -> Optional[uint32]:
+        response = await self.fetch("get_closest_index_from_timestamp", {"timestamp": timestamp})
+        return response["index"]
+
     async def get_unfinished_block_headers(self) -> List[UnfinishedHeaderBlock]:
         response = await self.fetch("get_unfinished_block_headers", {})
         return [UnfinishedHeaderBlock.from_json_dict(r) for r in response["headers"]]

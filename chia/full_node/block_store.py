@@ -432,6 +432,20 @@ class BlockStore:
             ret.append(all_blocks[hh])
         return ret
 
+    async def get_closest_index_from_timestamp(self, timestamp: int) -> Optional[uint32]:
+        if self.db_wrapper.db_version != 2:
+            raise Exception("Feature WIP.")
+
+        query = (
+            "SELECT DISTINCT confirmed_index FROM coin_record "
+            f"ORDER BY ABS(timestamp - {timestamp}) LIMIT 1;"
+        )
+
+        async with self.db_wrapper.read_db() as conn:
+            async with conn.execute(query) as cursor:
+                row = await cursor.fetchone()
+                return uint32(row[0])
+
     async def get_block_record(self, header_hash: bytes32) -> Optional[BlockRecord]:
 
         if self.db_wrapper.db_version == 2:

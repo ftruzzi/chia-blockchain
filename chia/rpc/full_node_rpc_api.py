@@ -40,6 +40,7 @@ class FullNodeRpcApi:
             "/get_block_record_by_height": self.get_block_record_by_height,
             "/get_block_record": self.get_block_record,
             "/get_block_records": self.get_block_records,
+            "/get_closest_index_from_timestamp": self.get_closest_index_from_timestamp,
             "/get_unfinished_block_headers": self.get_unfinished_block_headers,
             "/get_network_space": self.get_network_space,
             "/get_additions_and_removals": self.get_additions_and_removals,
@@ -430,6 +431,17 @@ class FullNodeRpcApi:
             raise ValueError(f"Block {header_hash.hex()} does not exist")
 
         return {"block_record": record}
+
+    async def get_closest_index_from_timestamp(self, request: Dict[str, int]) -> Optional[Dict]:
+        """
+        Retrieves the closest block index to a given timestamp.
+        """
+        if "timestamp" not in request:
+            raise ValueError('Missing timestamp in request data')
+
+        block_index = await self.service.block_store.get_closest_index_from_timestamp(request["timestamp"])
+        if block_index is not None:
+            return {"index": block_index}
 
     async def get_unfinished_block_headers(self, request: Dict) -> Optional[Dict]:
 
